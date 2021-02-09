@@ -13,9 +13,8 @@ const HOST = '0.0.0.0';
 const URL = process.env.APP_URL || 'https://myworkbot.herokuapp.com ';
 
 const options = {
-    // polling: true,
+    polling: true,
     port: PORT,
-    host: HOST
 }
 console.log('URL - ', URL, 'PORT - ', PORT);
 const bot = new TelegramBot(TOKEN, options);
