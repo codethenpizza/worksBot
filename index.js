@@ -20,7 +20,14 @@ const options = {
 console.log('URL - ', URL, 'PORT - ', PORT);
 const bot = new TelegramBot(TOKEN, options);
 
-bot.setWebHook(`${URL}/bot${TOKEN}`);
+bot.setWebHook(`${URL}/bot${TOKEN}`)
+    .then(() => {
+        console.log('hook passed')
+    })
+    .catch(e => {
+        console.error(e)
+    }
+)
 
 bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
