@@ -15,7 +15,7 @@ const options = {
     polling: true,
     port: PORT
 }
-
+console.log('URL', URL);
 const bot = new TelegramBot(TOKEN, options);
 
 bot.setWebHook(`${URL}/bot${TOKEN}`);
