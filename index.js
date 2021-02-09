@@ -5,11 +5,11 @@ const cron = require('node-cron');
 const TelegramBot = require('node-telegram-bot-api');
 
 const TOKEN = process.env.BOT_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+const JOBS_CHAT_ID = process.env.CHAT_ID;
 const STATUS_JOB_SCHEDULE = '40 14 * * 1-5';
 const CALLS_JOB_SCHEDULE = '30 21 * * 1-5'
 const PORT = process.env.PORT || 3000;
-const URL = process.env.APP_URL;
+const URL = process.env.APP_URL || 'https://myworkbot.herokuapp.com:443 ';
 
 const options = {
     // polling: true,
@@ -22,13 +22,13 @@ bot.setWebHook(`${URL}/bot${TOKEN}`);
 
 bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
-    await bot.sendMessage(CHAT_ID, `chat id ${chatId}`)
+    await bot.sendMessage(chatId, `chat id ${chatId}`)
 });
 
 bot.onText(/\/jobs/, async (msg) => {
     const chatId = msg.chat.id;
 
-    if (CHAT_ID) {
+    if (JOBS_CHAT_ID) {
         await bot.sendMessage(chatId, `Статус - ${STATUS_JOB_SCHEDULE}, вечерний созвон - ${CALLS_JOB_SCHEDULE}`);
         return;
     }
@@ -37,7 +37,7 @@ bot.onText(/\/jobs/, async (msg) => {
 })
 
 
-if (CHAT_ID) {
+if (JOBS_CHAT_ID) {
     console.log('jobs set');
 
     cron.schedule(STATUS_JOB_SCHEDULE, async () => {
@@ -60,10 +60,11 @@ bot.onText(/\)\)\)\)/, async (msg) => {
     const chatId = msg.chat.id;
     await bot.sendMessage(chatId, `)))0)00`)
 })
+
 // cron events
 const getStatusInfo = async () => {
     const status_time = '15:00'
-    await bot.sendMessage(CHAT_ID, `Кирилл, будет статус в ${status_time}?`);
+    await bot.sendMessage(JOBS_CHAT_ID, `Кирилл, будет статус в ${status_time}?`);
 }
 
 const createPoll = async () => {
@@ -74,5 +75,5 @@ const createPoll = async () => {
         open_period: 30000,
     }
 
-    await bot.sendPoll(CHAT_ID, question, answers, options);
+    await bot.sendPoll(JOBS_CHAT_ID, question, answers, options);
 }
