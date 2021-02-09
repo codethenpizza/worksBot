@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 const URL = process.env.APP_URL;
 
 const options = {
-    polling: true,
+    // polling: true,
     port: PORT
 }
 console.log('URL - ', URL, 'PORT - ', PORT);
