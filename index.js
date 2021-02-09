@@ -8,12 +8,14 @@ const TOKEN = process.env.BOT_TOKEN;
 const JOBS_CHAT_ID = process.env.CHAT_ID;
 const STATUS_JOB_SCHEDULE = '40 14 * * 1-5';
 const CALLS_JOB_SCHEDULE = '30 21 * * 1-5'
-const PORT = process.env.PORT || 3000;
-const URL = process.env.APP_URL || 'https://myworkbot.herokuapp.com:443 ';
+const PORT = process.env.PORT || 433;
+const HOST = '0.0.0.0';
+const URL = process.env.APP_URL || 'https://myworkbot.herokuapp.com ';
 
 const options = {
     // polling: true,
-    port: PORT
+    port: PORT,
+    host: HOST
 }
 console.log('URL - ', URL, 'PORT - ', PORT);
 const bot = new TelegramBot(TOKEN, options);
