@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node run index.js",
     "dev": "nodemon run index.js"
   },
   "keywords": [],
@@ -13,7 +14,9 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "node-cron": "^2.0.3",
-    "node-telegram-bot-api": "0.51.0",
+    "node-telegram-bot-api": "0.51.0"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.7"
   }
 }
