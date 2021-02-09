@@ -6,11 +6,9 @@ const TelegramBot = require('node-telegram-bot-api');
 
 const TOKEN = process.env.BOT_TOKEN;
 const JOBS_CHAT_ID = process.env.CHAT_ID;
-const STATUS_JOB_SCHEDULE = '40 14 * * 1-5';
-// const CALLS_JOB_SCHEDULE = '30 21 * * 1-5'
-const CALLS_JOB_SCHEDULE = '45 15 * * 1-5'
+const STATUS_JOB_SCHEDULE = process.env.STATUS_JOB_SCHEDULE || '40 14 * * 1-5';
+const CALLS_JOB_SCHEDULE = process.env.CALLS_JOB_SCHEDULE || '30 21 * * 1-5';
 const PORT = process.env.PORT || 433;
-const HOST = '0.0.0.0';
 const URL = process.env.APP_URL || 'https://myworkbot.herokuapp.com ';
 
 const options = {
@@ -50,13 +48,21 @@ if (JOBS_CHAT_ID) {
     console.log('jobs set');
 
     cron.schedule(STATUS_JOB_SCHEDULE, async () => {
-        console.log(STATUS_JOB_SCHEDULE);
-        await getStatusInfo();
+        console.log('status start job', STATUS_JOB_SCHEDULE);
+        try {
+            await getStatusInfo();
+        } catch (e) {
+            console.error('status job error', e);
+        }
     })
 
     cron.schedule(CALLS_JOB_SCHEDULE, async () => {
-        console.log(CALLS_JOB_SCHEDULE);
-        await createPoll();
+        console.log('calls start job', CALLS_JOB_SCHEDULE);
+        try {
+            await createPoll();
+        } catch (e) {
+            console.error('calls job error', e);
+        }
     })
 }
 
