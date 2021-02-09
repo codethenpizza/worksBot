@@ -8,14 +8,14 @@ const TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
 const STATUS_JOB_SCHEDULE = '40 14 * * 1-5';
 const CALLS_JOB_SCHEDULE = '30 21 * * 1-5'
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000;
 const URL = process.env.APP_URL;
 
 const options = {
     polling: true,
     port: PORT
 }
-console.log('URL', URL);
+console.log('URL - ', URL, 'PORT - ', PORT);
 const bot = new TelegramBot(TOKEN, options);
 
 bot.setWebHook(`${URL}/bot${TOKEN}`);
