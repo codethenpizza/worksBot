@@ -27,6 +27,7 @@ bot.setWebHook(`${URL}/bot${TOKEN}`)
     }
 )
 
+// general commands
 bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
     await bot.sendMessage(chatId, `chat id ${chatId}`)
@@ -43,14 +44,14 @@ bot.onText(/\/jobs/, async (msg) => {
     await bot.sendMessage(chatId, `Нет запланированных работ`);
 })
 
-
+// cron jobs
 if (JOBS_CHAT_ID) {
     console.log('jobs set');
 
     cron.schedule(STATUS_JOB_SCHEDULE, async () => {
         console.log('status start job', STATUS_JOB_SCHEDULE);
         try {
-            await getStatusInfo();
+            await getStatusInfo(JOBS_CHAT_ID);
         } catch (e) {
             console.error('status job error', e);
         }
@@ -59,7 +60,7 @@ if (JOBS_CHAT_ID) {
     cron.schedule(CALLS_JOB_SCHEDULE, async () => {
         console.log('calls start job', CALLS_JOB_SCHEDULE);
         try {
-            await createPoll();
+            await createPoll(JOBS_CHAT_ID);
         } catch (e) {
             console.error('calls job error', e);
         }
@@ -76,19 +77,24 @@ bot.onText(/\)\)\)\)/, async (msg) => {
     await bot.sendMessage(chatId, `)))0)00`)
 })
 
+bot.onText(/(созво)|(Андр)/gi, async (msg) => {
+    const chatId = msg.chat.id;
+    await createPoll(chatId);
+})
+
 // cron events
-const getStatusInfo = async () => {
+const getStatusInfo = async (chatId = JOBS_CHAT_ID) => {
     const status_time = '15:00'
-    await bot.sendMessage(JOBS_CHAT_ID, `Кирилл, будет статус в ${status_time}?`);
+    await bot.sendMessage(chatId, `Кирилл, будет статус в ${status_time}?`);
 }
 
-const createPoll = async () => {
-    const question = 'Нужен созвон с Андреем?';
+const createPoll = async (chatId = JOBS_CHAT_ID) => {
+    const question = 'Ребзя, нужен созвон с Андреем?';
     const answers = ['Да', 'Нет'];
     const options = {
         is_anonymous: false,
         open_period: 30000,
     }
 
-    await bot.sendPoll(JOBS_CHAT_ID, question, answers, options);
+    await bot.sendPoll(chatId, question, answers, options);
 }
