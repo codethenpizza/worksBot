@@ -2,21 +2,38 @@
   "name": "works",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon run index.js"
+    "start": "npm run build && node dist/index.js",
+    "dev": "nodemon --watch 'src/**' --ext \"ts, js, json\"  --ignore 'src/**/*.spec.ts' --exec npm run babel-node  src/index.ts",
+    "babel-node": "babel-node --presets @babel/preset-env",
+    "build": "tsc --project ./ && babel dist -d dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "mongodb": "^3.6.4",
+    "mongoose": "^5.11.15",
     "node-cron": "^2.0.3",
     "node-telegram-bot-api": "0.51.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.12.13",
+    "@babel/node": "^7.12.13",
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.13",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.13",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.12.13",
+    "@babel/preset-typescript": "^7.12.13",
+    "@types/node": "^14.14.25",
+    "@types/node-cron": "^2.0.3",
+    "@types/node-telegram-bot-api": "^0.51.0",
+    "nodemon": "^2.0.7",
+    "typescript": "^4.1.5"
   }
 }
