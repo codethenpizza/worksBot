@@ -3,12 +3,13 @@ import {IJobEventsSet, IJobMethod, IJobMethodOptions} from "../../models/Jobs";
 export const getStatusInfo = async (opt: IJobMethodOptions) => {
     const {bot, chatId} = opt;
     const status_time = '15:00'
-    await bot.sendMessage(chatId, `Кирилл, будет статус в ${status_time}?`);
+    const mention = '@kmsid'
+    await bot.sendMessage(chatId, `${mention} \nКирилл, будет статус в ${status_time}?`);
 };
 
 export const createPoll = async (opt: IJobMethodOptions) => {
     const {bot, chatId} = opt;
-    const question = 'Ребзя, нужен созвон с Андреем?';
+    const question = `Ребзя, нужен созвон с Андреем?`;
     const answers = ['Да', 'Нет'];
     const options = {
         is_anonymous: false,

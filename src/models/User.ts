@@ -2,6 +2,7 @@ import mongoose, {Schema, Document} from "mongoose";
 
 export interface IUser {
     telegramId: number
+    userName?: string
     firstName: string
     lastName?: string
     chatId: number
@@ -9,6 +10,7 @@ export interface IUser {
 
 export interface IUserSchema extends Document {
     id?: string,
+    userName: string
     telegramId: number
     firstName: string
     lastName?: string
@@ -18,6 +20,10 @@ export interface IUserSchema extends Document {
 const UserSchema: Schema = new mongoose.Schema({
     telegramId: {
         type: Number,
+        required: true,
+    },
+    userName: {
+        type: String,
         required: true,
     },
     firstName: {

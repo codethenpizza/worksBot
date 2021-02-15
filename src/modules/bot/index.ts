@@ -2,6 +2,9 @@ import TelegramBot from 'node-telegram-bot-api';
 
 // move dotenv in one place
 import dotenv from 'dotenv'
+import connectDB from "../../config/database";
+import JobController from "../jobs/JobController";
+
 dotenv.config({path: './.env'});
 
 const IS_PRODUCTION = process.env.PRODUCTION || false;
@@ -14,26 +17,38 @@ interface botOptions {
     port?: number | string
 }
 
-
-const getBot = async (): Promise<TelegramBot> => {
+const initBot = async () => {
     // general options
     const botOptions: botOptions = {
         polling: true,
     }
-    try {
-        if (!IS_PRODUCTION) {
-            return new TelegramBot(TOKEN!, botOptions);
-        }
-        botOptions.port = PORT;
-        const bot: TelegramBot = new TelegramBot(TOKEN!, botOptions);
-        await bot.setWebHook(`${URL}/bot${TOKEN}`);
 
-        console.log('URL - ', URL, 'PORT - ', PORT);
-        return bot;
+    if (!IS_PRODUCTION) {
+        return new TelegramBot(TOKEN!, botOptions);
+    }
+    botOptions.port = PORT;
+    const bot: TelegramBot = new TelegramBot(TOKEN!, botOptions);
+    await bot.setWebHook(`${URL}/bot${TOKEN}`);
+    return bot;
+}
+
+
+// functions that should be execute after bot created
+const afterInit = async (bot: TelegramBot): Promise<void> => {
+    await connectDB();
+    const jobController = new JobController(bot)
+    await jobController.scheduleJobsForAllChats();
+}
+
+const getBot = async (): Promise<TelegramBot> => {
+    try {
+        const bot = await initBot();
+        await afterInit(bot);
+        return bot
     } catch (e) {
         console.error(e)
         process.exit(1);
     }
 }
 
-export default getBot();
+export default getBot;

@@ -13,14 +13,13 @@ import {createPoll} from "./modules/jobs/JobEvents";
 
 
 const main = async () => {
-    const bot: TelegramBot = await getBot;
-    await connectDB();
+    const bot: TelegramBot = await getBot();
 
     // general commands
-    bot.onText(/\/start/, async (msg) => {
+    bot.onText(/\/marco/, async (msg) => {
         const chatId = msg.chat.id;
         try {
-            await bot.sendMessage(chatId, `Все ок`)
+            await bot.sendMessage(chatId, `Polo`)
         } catch (e) {
             console.error(e)
             await bot.sendMessage(chatId, `Чет не ок`)
@@ -30,10 +29,10 @@ const main = async () => {
     // jobs
     bot.onText(/\/jobs/, async (msg) => {
         const chatId = msg.chat.id;
-        const jobController = new JobController(chatId);
+        const jobController = new JobController(bot, chatId);
         try {
             const jobs = await jobController.findJobsByChatId();
-            await bot.sendMessage(chatId, `Для этого чата зарегано ${jobs.length} работ`);
+            await bot.sendMessage(chatId, `Зарегано работ для этого чата: ${jobs.length}`);
         } catch (e) {
             console.error(e)
             await bot.sendMessage(chatId, `Чет не ок`)
@@ -42,11 +41,11 @@ const main = async () => {
 
     bot.onText(/\/addjobs/, async (msg) => {
         const chatId = msg.chat.id;
-        const jobController = new JobController(chatId);
+        const jobController = new JobController(bot, chatId);
         try {
             await jobController.createDefaultJobs()
             const jobs = await jobController.findJobsByChatId();
-            await bot.sendMessage(chatId, `Для этого чата зарегано ${jobs.length} работ`);
+            await bot.sendMessage(chatId, `Зарегано работ для этого чата: ${jobs.length}`);
         } catch (e) {
             console.error(e)
             await bot.sendMessage(chatId, `Чет не ок`)
@@ -60,9 +59,10 @@ const main = async () => {
             if (!msg.from) {
                 return;
             }
-            const {id, first_name, last_name} = msg.from;
+            const {id, first_name, last_name, username} = msg.from;
             const dbUser: IUser = {
                 telegramId: id,
+                userName:  username,
                 firstName: first_name,
                 lastName: last_name,
                 chatId
@@ -90,7 +90,6 @@ const main = async () => {
         const chatId = msg.chat.id;
         await createPoll({bot, chatId})
     })
-
 }
 
 main();

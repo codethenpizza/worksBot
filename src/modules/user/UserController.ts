@@ -1,5 +1,7 @@
 import User, {IUserSchema, IUser} from '../../models/User'
 
+const WORK_MANAGER_ID = process.env.MANAGER_TELEGRAM_ID;
+
 class UserController {
     public static async getUser(userid: number): Promise<IUserSchema | null> {
         const user = await User.findOne({telegramId: userid}).exec();
@@ -27,9 +29,15 @@ class UserController {
         await User.remove({telegramId: userid})
     }
 
-    public static async getWorkManager(firstName: string, lastName: string): Promise<IUserSchema | null> {
+    public static async getWorkManager(): Promise<IUserSchema | null> {
         //TODO: reg work manager somehow or hardcode params here when get it
-        const user = await User.findOne({firstName, lastName}).exec();
+
+        // temporary get from env
+        if (!WORK_MANAGER_ID) {
+            return null
+        }
+        const managerId = Number(WORK_MANAGER_ID)
+        const user = await User.findOne({telegramId: managerId}).exec();
         if (!user) {
             return null
         }
