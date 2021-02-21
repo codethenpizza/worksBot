@@ -16,7 +16,7 @@ class PollController {
         if (!poll) {
             throw new Error(`poll with id ${pollId} doesn't exist`);
         }
-        console.log('updateVotes poll', poll);
+
         const dbUser = await UserController.findOrCreateUser({
             chatId: poll.chatId,
             ...user,
