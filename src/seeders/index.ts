@@ -1,4 +1,4 @@
-import {IRawJob} from "../models/Jobs";
+import {IRawJob} from "../modules/jobs/types";
 import {allEvents} from "../modules/jobs/JobEvents";
 
 const STATUS_JOB_SCHEDULE = process.env.STATUS_JOB_SCHEDULE || '40 14 * * 1-5';
@@ -13,7 +13,7 @@ export const seedJobsArr: IRawJob[] = [
     {
         name: 'createPoll',
         schedule: CALLS_JOB_SCHEDULE,
-        method: allEvents.createPoll,
+        method: allEvents.createStatusPoll,
     }
 ]
 

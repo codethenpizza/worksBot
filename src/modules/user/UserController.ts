@@ -1,4 +1,5 @@
-import User, {IUserSchema, IUser} from '../../models/User'
+import User  from '../../models/User'
+import {IUserSchema, IUser} from "./types";
 
 const WORK_MANAGER_ID = process.env.MANAGER_TELEGRAM_ID;
 
@@ -12,17 +13,23 @@ class UserController {
     }
 
     // e.g. upsert
-    public static async findOrCreateUser(user: IUser): Promise<void> {
+    public static async findOrCreateUser(user: IUser): Promise<IUserSchema> {
         const userId = user.telegramId
         const foundedUser = await UserController.getUser(userId)
-        if (!foundedUser) {
-            await UserController.createUser(user);
+        if (foundedUser) {
+            return foundedUser
         }
+        return await UserController.createUser(user);
     }
 
-    public static async createUser(user: IUser): Promise<void> {
-        //return id?
-        await User.findOneAndUpdate({telegramId: user.telegramId, chatId: user.chatId}, user, {upsert: true});
+    public static async createUser(user: IUser): Promise<IUserSchema> {
+        return await User.create({
+            telegramId: user.telegramId,
+            chatId: user.chatId,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userName: user.userName
+        });
     }
 
     public static async removeUser(userid: number): Promise<void> {

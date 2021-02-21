@@ -1,9 +1,9 @@
-import JobSchema, {IJob, IJobSchema, IJobMethod, IDBJob} from '../../models/Jobs'
+import JobSchema from '../../models/Jobs'
+import {IJobSchema, IJob, IDBJob, IJobMethod} from "./types";
 import getJobEvent from "./JobEvents";
 
 const cron = require('node-cron')
 
-import JobEvents from "./JobEvents";
 import {seedJobsArr} from "../../seeders";
 import TelegramBot from "node-telegram-bot-api";
 
@@ -42,12 +42,24 @@ class JobsController {
         }
     }
 
-    //add decorator to create connect and close
+    public async deleteAllJobs(chatId?: number): Promise<void> {
+        const jobChatId = chatId || this.chatId;
+        if (!jobChatId) {
+            console.error('createDefaultJobs: chat id must been provided')
+            return
+        }
+
+        try {
+            JobSchema.deleteMany({chatId: jobChatId})
+        } catch (e) {
+            console.error(`createNewJob error: cannot create job`, e)
+        }
+    }
+
     public async createNewJob(job: IDBJob): Promise<void> {
         try {
             const filter = {
                 chatId: job.chatId,
-                schedule: job.schedule,
                 methodName: job.methodName
             }
             await JobSchema.findOneAndUpdate(filter, job, {upsert: true});
@@ -105,7 +117,7 @@ class JobsController {
     private static prepareJobToExecute(dbJob: IJobSchema): IJob {
         const jobMethod: IJobMethod | null = getJobEvent(dbJob.methodName);
         if (jobMethod === null) {
-            throw new Error(`prepareJobToExecute: cannot find job method for job with id ${dbJob.id}`);
+            throw new Error(`prepareJobToExecute: cannot find job method for job with id ${dbJob.id}. Method name: ${dbJob.methodName}`);
         }
         const { chatId, name, schedule} = dbJob
         return {

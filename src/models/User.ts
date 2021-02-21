@@ -1,21 +1,5 @@
-import mongoose, {Schema, Document} from "mongoose";
-
-export interface IUser {
-    telegramId: number
-    userName?: string
-    firstName: string
-    lastName?: string
-    chatId: number
-}
-
-export interface IUserSchema extends Document {
-    id?: string,
-    userName: string
-    telegramId: number
-    firstName: string
-    lastName?: string
-    chatId: number
-}
+import mongoose, {Schema} from "mongoose";
+import {IUserSchema} from "../modules/user/types";
 
 const UserSchema: Schema = new mongoose.Schema({
     telegramId: {

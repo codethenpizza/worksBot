@@ -28,7 +28,7 @@ const initBot = async () => {
     }
     botOptions.port = PORT;
     const bot: TelegramBot = new TelegramBot(TOKEN!, botOptions);
-    await bot.setWebHook(`${URL}/bot${TOKEN}`);
+    await bot.setWebHook(`${URL}/bot${TOKEN}`, {allowed_updates: ['poll_answer']});
     return bot;
 }
 
