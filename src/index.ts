@@ -10,6 +10,7 @@ import UserController from "./modules/user/UserController";
 import {IUser} from "./modules/user/types";
 import {IPollVotesUpdateOptions} from "./modules/polls/types";
 import PollController from "./modules/polls/PollController";
+import {createStatusPoll} from "./modules/jobs/JobEvents";
 
 const main = async () => {
     const bot: TelegramBot = await getBot();
@@ -117,6 +118,13 @@ const main = async () => {
     bot.onText(/\)\)\)\)/, async (msg) => {
         const chatId = msg.chat.id;
         await bot.sendMessage(chatId, `)))0)00`)
+    })
+
+    bot.onText(/\/polldev/, async (msg) => {
+        if (msg.from?.id === Number(process.env.ADMIN_TELEGRAM_ID)) {
+            const chatId = msg.chat.id;
+            await createStatusPoll({bot, chatId})
+        }
     })
 
     bot.onText(/\/call/, async (msg) => {

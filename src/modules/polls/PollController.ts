@@ -1,5 +1,5 @@
 import PollSchema from "../../models/Polls";
-import {IPollSchema, IPoll, IPollVotesMap, IPollVotesUpdateOptions} from "./types";
+import {IPollSchema, IPoll, IPollVotesMap, IPollVote, IPollVotesUpdateOptions} from "./types";
 import UserController from "../user/UserController";
 import UserSchema from "../../models/User";
 
@@ -46,7 +46,10 @@ class PollController {
         if (!poll || !poll.votes || !Object.keys(poll.votes).length) {
             return []
         }
-        const usersTelegramIds = Object.keys(poll.votes).map(key => Number(key));
+        const answers = Object.values(poll.votes);
+        // temporary check answers by index bc haven't multiply answers polls
+        const filteredAnswers = answers.filter(answer => answer.option[0] === 0)
+        const usersTelegramIds = filteredAnswers.map(answer => Number(answer.userTelegramId));
         const users = await UserSchema.find({
             telegramId: {
                 $in: usersTelegramIds

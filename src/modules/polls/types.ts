@@ -1,13 +1,13 @@
 import {Document} from "mongoose";
 import {IUserInfo} from "../user/types";
 
-interface IVote {
+export interface IPollVote {
     userTelegramId: number,
     option: number | number[]
 }
 
 export interface IPollVotesMap {
-    [key: number]: IVote
+    [key: number]: IPollVote
 }
 
 export interface IPoll {
