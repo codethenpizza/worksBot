@@ -86,7 +86,7 @@ class JobsController {
         for (let i = 0; i < jobs.length; i++) {
             this.scheduleJob(jobs[i]);
         }
-        console.log('jobs scheduled', jobs.length)
+        console.log(`Total jobs scheduled - ${jobs.length}`)
     }
 
     public async scheduleJobsForChat(): Promise<void> {
