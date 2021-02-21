@@ -109,6 +109,7 @@ class JobsController {
             }, {
                 timezone: 'Europe/Moscow'
             });
+            console.log(`job scheduled. Chat id: ${dbJob.chatId}. Method: ${dbJob.methodName}. Schedule: ${dbJob.schedule}`)
         } catch (e) {
             console.error('scheduleJob: cannot schedule job', e)
         }
