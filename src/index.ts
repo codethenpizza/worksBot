@@ -10,7 +10,8 @@ import UserController from "./modules/user/UserController";
 import {IUser} from "./modules/user/types";
 import {IPollVotesUpdateOptions} from "./modules/polls/types";
 import PollController from "./modules/polls/PollController";
-import {createStatusPoll} from "./modules/jobs/JobEvents";
+import {createStatusPoll, getStatusInfo} from "./modules/jobs/JobEvents";
+
 
 const main = async () => {
     const bot: TelegramBot = await getBot();
@@ -103,8 +104,26 @@ const main = async () => {
             await PollController.updateVotes(options);
         } catch (e) {
             console.error(e);
-            await bot.sendMessage(answer.poll_id, 'оуч');
         }
+    })
+
+    // callbacks
+    bot.on('callback_query', async (query) => {
+        const chatId = query.message?.chat.id
+        if (!chatId || !query.data) {
+            return;
+        }
+        const name = query.from.first_name
+        if (query.data === 'getStatusInfoCallbackYes') {
+             await bot.sendMessage(chatId, `${name}: статус будет`)
+             return;
+        }
+
+        if (query.data === 'getStatusInfoCallbackNo') {
+            await bot.sendMessage(chatId, `${name}: статуса не будет`);
+            return;
+        }
+        await bot.sendMessage(chatId, 'wat?');
     })
 
     // short answers
@@ -124,6 +143,13 @@ const main = async () => {
         if (msg.from?.id === Number(process.env.ADMIN_TELEGRAM_ID)) {
             const chatId = msg.chat.id;
             await createStatusPoll({bot, chatId})
+        }
+    })
+
+    bot.onText(/\/askdev/, async (msg) => {
+        if (msg.from?.id === Number(process.env.ADMIN_TELEGRAM_ID)) {
+            const chatId = msg.chat.id;
+            await getStatusInfo({bot, chatId})
         }
     })
 

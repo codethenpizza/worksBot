@@ -1,4 +1,3 @@
-
 import {IJobMethodOptions, IJobEventsSet, IJobMethod} from "./types";
 import {IPoll} from "../polls/types";
 import PollController from "../polls/PollController";
@@ -7,7 +6,15 @@ export const getStatusInfo = async (opt: IJobMethodOptions) => {
     const {bot, chatId} = opt;
     const status_time = '15:00'
     const mention = '@kmsid'
-    await bot.sendMessage(chatId, `${mention} \nКирилл, будет статус в ${status_time}?`);
+
+    await bot.sendMessage(chatId, `${mention} \nКирилл, будет статус в ${status_time}?`, {
+        reply_markup: {
+            inline_keyboard: [
+                [{text: 'Да', callback_data: 'getStatusInfoCallbackYes'}],
+                [{text: 'Нет', callback_data: 'getStatusInfoCallbackNo'}],
+            ]
+        }
+    });
 };
 
 export const createStatusPoll = async (opt: IJobMethodOptions) => {
