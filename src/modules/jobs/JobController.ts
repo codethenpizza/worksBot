@@ -50,7 +50,7 @@ class JobsController {
         }
 
         try {
-            JobSchema.deleteMany({chatId: jobChatId})
+           await JobSchema.deleteMany({chatId: jobChatId})
         } catch (e) {
             console.error(`createNewJob error: cannot create job`, e)
         }
