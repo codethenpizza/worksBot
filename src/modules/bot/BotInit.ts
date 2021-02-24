@@ -7,7 +7,7 @@ import JobController from "../jobs/JobController";
 
 dotenv.config({path: './.env'});
 
-const IS_PRODUCTION = process.env.PRODUCTION || false;
+const IS_PRODUCTION = process.env.PRODUCTION;
 const TOKEN = process.env.BOT_TOKEN;
 const PORT = process.env.PORT || 433;
 const URL = process.env.APP_URL || 'https://myworkbot.herokuapp.com ';
