@@ -139,6 +139,12 @@ const main = async () => {
         await bot.sendMessage(chatId, `)))0)00`)
     })
 
+    bot.onText(/Я не Кирилл/, async (msg) => {
+        const chatId = msg.chat.id;
+        await bot.sendMessage(chatId, `ну лол`)
+        await getStatusInfo({bot, chatId})
+    })
+
     bot.onText(/\/polldev/, async (msg) => {
         if (msg.from?.id === Number(process.env.ADMIN_TELEGRAM_ID)) {
             const chatId = msg.chat.id;

@@ -9,10 +9,11 @@ export const getStatusInfo = async (opt: IJobMethodOptions) => {
 
     await bot.sendMessage(chatId, `${mention} \nКирилл, будет статус в ${status_time}?`, {
         reply_markup: {
-            inline_keyboard: [
-                [{text: 'Да', callback_data: 'getStatusInfoCallbackYes'}],
-                [{text: 'Нет', callback_data: 'getStatusInfoCallbackNo'}],
-            ]
+            keyboard: [
+               [{text: 'Да'}, {text: 'Нет'}],
+               [{text: 'Я не Кирилл'}],
+            ],
+            one_time_keyboard: true
         }
     });
 };
