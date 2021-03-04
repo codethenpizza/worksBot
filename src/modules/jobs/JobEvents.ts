@@ -1,6 +1,7 @@
 import {IJobMethodOptions, IJobEventsSet, IJobMethod} from "./types";
 import {IPoll} from "../polls/types";
 import PollController from "../polls/PollController";
+import JobController from "./JobController";
 
 export const getStatusInfo = async (opt: IJobMethodOptions) => {
     const {bot, chatId} = opt;
@@ -10,10 +11,11 @@ export const getStatusInfo = async (opt: IJobMethodOptions) => {
     await bot.sendMessage(chatId, `${mention} \nКирилл, будет статус в ${status_time}?`, {
         reply_markup: {
             keyboard: [
-               [{text: 'Да'}, {text: 'Нет'}],
-               [{text: 'Я не Кирилл'}],
+                [{text: 'Да'}],
+                [{text: 'Нет'}]
             ],
-            one_time_keyboard: true
+            one_time_keyboard: true,
+            selective: true,
         }
     });
 };
@@ -34,12 +36,24 @@ export const createStatusPoll = async (opt: IJobMethodOptions) => {
         pollId: msg.poll!.id,
     }
     await PollController.createPoll(poll);
+    await bot.pinChatMessage(chatId, String(msg.message_id));
 };
+
+// TODO unpin poll not by cron job, but after N hour after createStatusPoll method calls
+export const unpinPoll = async (opt: IJobMethodOptions) => {
+    const {bot, chatId} = opt;
+    const poll = await PollController.getLastPoll(chatId);
+    if (!poll) {
+        return;
+    }
+    await bot.unpinChatMessage(chatId);
+}
 
 // export only for seeders
 export const allEvents: IJobEventsSet = {
     getStatusInfo,
-    createStatusPoll
+    createStatusPoll,
+    unpinPoll
 }
 
 const getJobEvent = (methodName: string): IJobMethod | null => {

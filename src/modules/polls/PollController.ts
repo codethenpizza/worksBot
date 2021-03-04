@@ -41,8 +41,8 @@ class PollController {
     }
 
     // if empty return empty arr of mentions
-    public static async getLastPollUserMentions(): Promise<string[]> {
-        const poll = await PollController.getLastPoll();
+    public static async getLastPollUserMentions(chatId: number): Promise<string[]> {
+        const poll = await PollController.getLastPoll(chatId);
         if (!poll || !poll.votes || !Object.keys(poll.votes).length) {
             return []
         }
@@ -66,8 +66,8 @@ class PollController {
         })
     }
 
-    public static async getLastPoll() {
-        return PollSchema.findOne().sort({createdAt: -1}).exec();
+    public static async getLastPoll(chatId: number) {
+        return PollSchema.findOne({chatId}).sort({createdAt: -1}).exec();
     }
 }
 
