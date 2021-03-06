@@ -18,7 +18,7 @@ class BotController {
     public async ping(msg: Message) {
         const chatId = msg.chat.id;
         try {
-            await this.bot.sendMessage(chatId, `Polo`)
+            await this.bot.sendMessage(chatId, `Polo (chat: ${chatId}), user: ${msg.from?.id}`)
         } catch (e) {
             console.error(e)
             await this.bot.sendMessage(chatId, `Чет не ок`)
@@ -27,7 +27,12 @@ class BotController {
 
     /* Jobs */
     public async jobs(msg: Message) {
+        const adminId = Number(process.env.ADMIN_TELEGRAM_ID);
         const chatId = msg.chat.id;
+        if (msg.from?.id !== adminId || !msg.text) {
+            await this.bot.sendMessage(chatId, 'Я же знаю что ты не админ');
+            return
+        }
 
         if (!msg.text) {
             return
