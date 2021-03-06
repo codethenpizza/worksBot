@@ -18,7 +18,7 @@ class BotController {
     public async ping(msg: Message) {
         const chatId = msg.chat.id;
         try {
-            await this.bot.sendMessage(chatId, `Polo (chat: ${chatId}), user: ${msg.from?.id}`)
+            await this.bot.sendMessage(chatId, `Polo \n (chat: ${chatId}, user: ${msg.from?.id})`)
         } catch (e) {
             console.error(e)
             await this.bot.sendMessage(chatId, `Чет не ок`)
