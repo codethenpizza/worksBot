@@ -197,8 +197,8 @@ class BotController {
         const chatId = msg.chat.id;
 
         const isSmiles = msg.text.match(/\)\)\)\)/);
-        const isLol = msg.text.match(/лол/);
-        const isKek = msg.text.match(/кек/);
+        const isLol = msg.text.match(/лол/i);
+        const isKek = msg.text.match(/кек/i);
 
         if (isSmiles) {
             await this.bot.sendMessage(chatId, `)))0)00`)
