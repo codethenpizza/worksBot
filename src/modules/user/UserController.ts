@@ -4,8 +4,8 @@ import {IUserSchema, IUser} from "./types";
 const WORK_MANAGER_ID = process.env.MANAGER_TELEGRAM_ID;
 
 class UserController {
-    public static async getUser(userid: number): Promise<IUserSchema | null> {
-        const user = await User.findOne({telegramId: userid}).exec();
+    public static async getUser(userid: number, chatId: number): Promise<IUserSchema | null> {
+        const user = await User.findOne({telegramId: userid, chatId}).exec();
         if (!user) {
             return null
         }
@@ -14,8 +14,8 @@ class UserController {
 
     // e.g. upsert
     public static async findOrCreateUser(user: IUser): Promise<IUserSchema> {
-        const userId = user.telegramId
-        const foundedUser = await UserController.getUser(userId)
+        const {telegramId: userId, chatId} = user
+        const foundedUser = await UserController.getUser(userId, chatId)
         if (foundedUser) {
             return foundedUser
         }

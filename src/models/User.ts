@@ -1,6 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import {IUserSchema} from "../modules/user/types";
 
+// TODO make array of chat ids for avoid user duplication
 const UserSchema: Schema = new mongoose.Schema({
     telegramId: {
         type: Number,
