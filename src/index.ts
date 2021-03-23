@@ -55,7 +55,6 @@ const main = async () => {
         } catch (e) {
             console.error('callback_query', e)
         }
-        // await botController.managePollAnswer(answer);
     });
 
     bot.onText(/\/call/, async (msg) => {

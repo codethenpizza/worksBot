@@ -18,7 +18,13 @@ class BotController {
     public async ping(msg: Message) {
         const chatId = msg.chat.id;
         try {
-            await this.bot.sendMessage(chatId, `Polo \n (chat: ${chatId}, user: ${msg.from?.id})`)
+            console.log(`chat: ${chatId}, user: ${msg.from?.id}`)
+            await this.bot.sendMessage(chatId, `Polo`, {
+                    reply_markup: {
+                        keyboard: [[{text: 'Задеплоили?'}, {text: 'Го тимс?'},], [{text: 'Попозже'}, {text: 'Задеплоил'}], [{text: 'Говнецо какое то'}, {text: 'Прод упал'}]]
+                    }
+                }
+            )
         } catch (e) {
             console.error(e)
             await this.bot.sendMessage(chatId, `Чет не ок`)
@@ -221,10 +227,10 @@ class BotController {
             await this.bot.sendMessage(chatId, `)))0)00`)
         }
         if (isLol) {
-            await this.bot.sendMessage(chatId, `лол`)
+            await this.bot.sendMessage(chatId, `кек`)
         }
         if (isKek) {
-            await this.bot.sendMessage(chatId, `кек`)
+            await this.bot.sendMessage(chatId, `лол`)
         }
     }
 }
