@@ -36,8 +36,7 @@ const initBot = async () => {
 // functions that should be execute after bot created
 const afterInit = async (bot: TelegramBot): Promise<void> => {
     await connectDB();
-    const jobController = new JobController(bot)
-    await jobController.scheduleJobsForAllChats();
+    await JobController.scheduleJobsForAllChats(bot);
 }
 
 const getBot = async (): Promise<TelegramBot> => {
