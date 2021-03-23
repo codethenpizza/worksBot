@@ -1,21 +1,29 @@
-import {IJobMethodOptions, IJobEventsSet, IJobMethod} from "./types";
-import {IPoll} from "../polls/types";
-import PollController from "../polls/PollController";
-import JobController from "./JobController";
+import {IPoll} from "../../polls/types";
+import PollController from "../../polls/PollController";
+import IJob from "../types";
 
-export const getStatusInfo = async (opt: IJobMethodOptions) => {
+
+export const getStatusInfo = async (opt: IJob.JobMethodOptions) => {
     const {bot, chatId} = opt;
     const status_time = '15:00'
     const mention = '@kmsid'
     try {
         await bot.sendMessage(chatId, `${mention} \nКирилл, будет статус в ${status_time}?`, {
             reply_markup: {
-                keyboard: [
-                    [{text: 'Да'}],
-                    [{text: 'Нет'}]
-                ],
-                one_time_keyboard: true,
-                selective: true,
+                inline_keyboard: [
+                    [
+                        {
+                            text: 'Будет',
+                            callback_data: 'statusOk'
+                        }
+                    ], [
+                        {
+                            text: 'Не-а',
+                            callback_data: 'statusNotOk'
+                        }
+                    ]
+
+                ]
             }
         });
     } catch (e) {
@@ -23,7 +31,7 @@ export const getStatusInfo = async (opt: IJobMethodOptions) => {
     }
 };
 
-export const createStatusPoll = async (opt: IJobMethodOptions) => {
+export const createStatusPoll = async (opt: IJob.JobMethodOptions) => {
     try {
         const {bot, chatId} = opt;
         const question = `Ребзя, нужен созвон с Андреем?`;
@@ -48,7 +56,7 @@ export const createStatusPoll = async (opt: IJobMethodOptions) => {
 };
 
 // TODO unpin poll not by cron job, but after N hour after createStatusPoll method calls
-export const unpinPoll = async (opt: IJobMethodOptions) => {
+export const unpinPoll = async (opt: IJob.JobMethodOptions) => {
     try {
         const {bot, chatId} = opt;
         const poll = await PollController.getLastPoll(chatId);
@@ -62,14 +70,14 @@ export const unpinPoll = async (opt: IJobMethodOptions) => {
 }
 
 // export only for seeders
-export const allEvents: IJobEventsSet = {
+export const allMethods: IJob.JobEventsSet = {
     getStatusInfo,
     createStatusPoll,
     unpinPoll
 }
 
-const getJobEvent = (methodName: string): IJobMethod | null => {
-    const method: IJobMethod | undefined = allEvents[methodName];
+const getJobMethod = (methodName: string): IJob.JobMethod | null => {
+    const method: IJob.JobMethod | undefined = allMethods[methodName];
     if (method === undefined) {
         return null
     }
@@ -77,4 +85,4 @@ const getJobEvent = (methodName: string): IJobMethod | null => {
 }
 
 
-export default getJobEvent;
+export default getJobMethod;

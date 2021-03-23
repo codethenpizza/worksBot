@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import {IJobSchema} from "../modules/jobs/types";
+import IJob from "../modules/jobs/types";
 
 
 const JobSchema: Schema = new mongoose.Schema({
@@ -21,4 +21,4 @@ const JobSchema: Schema = new mongoose.Schema({
     },
 })
 
-export default mongoose.model<IJobSchema>('Job', JobSchema)
+export default mongoose.model<IJob.JobSchema>('Job', JobSchema)

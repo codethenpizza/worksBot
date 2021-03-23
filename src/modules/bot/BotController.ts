@@ -4,7 +4,7 @@ import {IUser} from "../user/types";
 import UserController from "../user/UserController";
 import {IPollVotesUpdateOptions} from "../polls/types";
 import PollController from "../polls/PollController";
-import {allEvents, unpinPoll} from "../jobs/JobEvents";
+import {allMethods} from "../jobs/data/JobMethods";
 
 
 class BotController {
@@ -41,12 +41,32 @@ class BotController {
         const isDelJobs = msg.text.match(/del/)
 
         if (isAddJobs && isDelJobs) {
-           await  this.bot.sendMessage(chatId, 'add or dell');
-           return;
+            await this.bot.sendMessage(chatId, 'add or dell?');
+            return;
         }
 
         if (isAddJobs) {
-            await this.addJobs(chatId);
+            const action = msg.text.match(/(?<=—).*$/gi);
+
+            if (!action || !action.length) {
+                // TODO get list of jobs
+                await this.bot.sendMessage(chatId, 'please type add --all or add (one or all of jobs) --A,B,C');
+                return;
+            }
+            if (action.length > 1) {
+                console.warn('jobs: action list match longer than 1');
+            }
+
+            const text = action[0];
+
+            if (text === 'all') {
+                await this.addDefaultJobs(chatId);
+                return;
+            }
+
+            const list = text.split(',').map(n => n.trim())
+            await JobController.createJobsForChatByName(list, chatId)
+            await this.getJobsInfo(chatId);
             return;
         }
         if (isDelJobs) {
@@ -58,16 +78,14 @@ class BotController {
     }
 
     private async getJobsInfo(chatId: number) {
-        const jobController = new JobController(this.bot, chatId);
-        const jobs = await jobController.findJobsByChatId();
+        const jobs = await JobController.findJobsByChatId(chatId);
         await this.bot.sendMessage(chatId, `Зарегано работ для этого чата: ${jobs.length}`);
     }
 
-    private async addJobs(chatId: number) {
-        const jobController = new JobController(this.bot, chatId);
+    private async addDefaultJobs(chatId: number) {
         try {
-            await jobController.createDefaultJobs();
-            const jobs = await jobController.findJobsByChatId();
+            await JobController.createDefaultJobs(chatId);
+            const jobs = await JobController.findJobsByChatId(chatId);
             await this.bot.sendMessage(chatId, `Зарегано работ для этого чата: ${jobs.length}`);
         } catch (e) {
             console.error(e)
@@ -76,9 +94,8 @@ class BotController {
     }
 
     private async delJobs(chatId: number) {
-        const jobController = new JobController(this.bot, chatId);
         try {
-            await jobController.deleteAllJobs();
+            await JobController.deleteAllJobs(chatId);
             await this.bot.sendMessage(chatId, `Работы удалены`);
         } catch (e) {
             console.error(e)
@@ -178,15 +195,15 @@ class BotController {
     }
 
     private async pollDev(chatId: number) {
-        await allEvents.createStatusPoll({bot: this.bot, chatId})
+        await allMethods.createStatusPoll({bot: this.bot, chatId})
     }
 
     private async askDev(chatId: number) {
-        await allEvents.getStatusInfo({bot: this.bot, chatId})
+        await allMethods.getStatusInfo({bot: this.bot, chatId})
     }
 
     private async unpinPoll(chatId: number) {
-        await allEvents.unpinPoll({bot: this.bot, chatId});
+        await allMethods.unpinPoll({bot: this.bot, chatId});
     }
 
     /* short Answers */

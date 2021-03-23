@@ -1,49 +1,43 @@
-import TelegramBot from "node-telegram-bot-api";
 import {Document} from "mongoose";
+import TelegramBot from "node-telegram-bot-api";
+import {defaultJobsArray} from "./data/Jobs";
 
-//TODO refactor job interfaces
-export type IJobMethodOptions = {
-    chatId: number
-    bot: TelegramBot
-} & {
-    [key in string | number]: any
-};
+const names: string[] = defaultJobsArray.map(job => job.name)
 
-export type IJobMethod = (arg: IJobMethodOptions) => Promise<any>
 
-// for create new job
-export interface IRawJob {
-    name: string
-    schedule: string
-    method: IJobMethod
+namespace IJob {
+    export type TJobNames = typeof names[number];
+
+    export type JobMethodOptions = {
+        chatId: number
+        bot: TelegramBot
+    } & {
+        [key in string | number]: any
+    };
+
+    export type JobMethod = (arg: JobMethodOptions) => Promise<any>
+
+    export interface RawJob {
+        name: string
+        schedule: string
+        methodName: string
+    }
+
+    export interface ChatJob extends RawJob {
+        chatId: number
+    }
+
+    export interface JobSchema extends ChatJob, Document {
+    }
+
+    export interface ReadyToExecuteJob extends ChatJob {
+        method: JobMethod
+    }
+
+    // store all possible job evens
+    export interface JobEventsSet {
+        [key: string]: JobMethod
+    }
 }
 
-export interface IDBJob {
-    name: string
-    schedule: string
-    methodName: string
-    chatId: number
-}
-
-// for saving job
-export interface IJobSchema extends Document {
-    id?: string
-    name: string
-    schedule: string
-    methodName: string
-    chatId: number
-}
-
-// ready to execute job
-export interface IJob {
-    id?: string
-    name: string
-    schedule: string
-    method: IJobMethod
-    chatId: number
-}
-
-// store all possible job evens
-export interface IJobEventsSet {
-    [key: string]: IJobMethod
-}
+export default IJob
